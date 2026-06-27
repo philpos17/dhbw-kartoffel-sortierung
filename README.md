@@ -51,6 +51,15 @@ Aktuelle Klassenverteilung laut bisherigem Stand:
 Wichtiger Hinweis:
 Der Datensatz ist vermutlich noch nicht vollständig repräsentativ für den realen späteren Einsatz. Nach aktuellem Stand wurden Kartoffeln auf ein Band gelegt, während Steine und beschädigte Beispiele teilweise künstlich ergänzt wurden. Die Repräsentativität des Datensatzes und insbesondere des Validation Sets muss im Projekt kritisch reflektiert werden.
 
+### Optionale externe Datenquellen (Kaggle u. ä.)
+
+Ergänzend könnte ein öffentlicher Kartoffeldatensatz über Kaggle oder ähnliche Plattformen bezogen werden, etwa um seltene Klassen anzureichern, Defekttypen abzudecken oder zusätzliche Beispiele für gesunde Kartoffeln zu erhalten. Beispiele:
+
+- [Potato Disease Recognition Dataset](https://www.kaggle.com/datasets/sujaykapadnis/potato-disease-recognition-dataset)
+- [Healthy Potato Image](https://www.kaggle.com/datasets/mehedihasanmridha/healthy-potato-image)
+
+Wichtig: Solche Datensätze stammen aus anderen Aufnahmebedingungen (Beleuchtung, Hintergrund, Einzelobjekt statt dicht belegtes Band) und dürfen daher nur ergänzend im Training verwendet werden. Validation und Operational Test sollten weiterhin auf eigenen, realistischen Banddaten basieren, um einen Domain Shift nicht zu verschleiern. Lizenz und Nutzungsbedingungen der jeweiligen Quelle sind vor der Verwendung zu prüfen.
+
 ## Bisherige Experimente in Roboflow
 
 Bisher wurden in Roboflow mehrere Object-Detection-Modelle getestet.
@@ -100,6 +109,21 @@ Ein wichtiger Teil des Projekts ist die Überführung der bisher in Roboflow gel
 - verwendete Hyperparameter
 - Evaluationsergebnisse
 
+## Mögliche Zielhardware: Edge-Deployment auf NVIDIA Jetson (optional)
+
+Als zusätzliche, noch nicht verbindliche Idee steht im Raum, die spätere Implementierung auf einem NVIDIA Jetson (z. B. Orin Nano / Orin NX) laufen zu lassen, um eine Inferenz direkt am Förderband ohne externen Rechner zu ermöglichen.
+
+Ob dies tatsächlich Teil des Projekts wird, ist offen, da der Setup-Aufwand (JetPack, TensorRT-Konvertierung, Treiber- und Kamera-Integration) hoch ist. Realistisch ist daher zunächst nur eine **Machbarkeitsbewertung auf Basis der Hardware-Specs**, statt eines vollständigen produktiven Deployments.
+
+Zu betrachten wären insbesondere:
+
+- erwartete Inferenzlatenz und Durchsatz der Kandidatenmodelle (kompaktes YOLO vs. RF-DETR) auf Jetson-Klasse-Hardware
+- verfügbarer Speicher und Rechenleistung (TOPS) im Verhältnis zur geforderten Bandgeschwindigkeit
+- Notwendigkeit von Modelloptimierung (Quantisierung, TensorRT, Modellgröße)
+- Aufwand für Toolchain und Integration gegenüber dem Projektnutzen
+
+Diese Bewertung kann auch dann ein wertvolles Projektergebnis sein, wenn am Ende kein reales Jetson-Deployment umgesetzt wird.
+
 ## Offene Fragen
 
 Die folgenden Punkte müssen noch geklärt oder geschärft werden:
@@ -110,6 +134,7 @@ Die folgenden Punkte müssen noch geklärt oder geschärft werden:
 - Wie sollte ein repräsentatives Validation- und Test-Set aussehen?
 - Können zusätzliche echte Daten aufgenommen werden?
 - Soll das Endziel eher Erkennung, Zählung oder tatsächliche Sortierentscheidung sein?
+- Soll ein Edge-Deployment auf NVIDIA Jetson Teil des Projekts werden oder nur als Machbarkeitsbewertung auf Basis der Hardware-Specs einfließen?
 
 ## Vorläufiges Fazit
 

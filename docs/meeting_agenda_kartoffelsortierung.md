@@ -77,16 +77,24 @@ Zu klären:
 - Können wir nicht vorsortierte oder zumindest weniger künstlich arrangierte Szenen aufnehmen?
 - Können wir verschiedene Dichten, Lichtbedingungen und Verschmutzungsgrade abdecken?
 - Können wir Daten aus mehreren Chargen, Sorten oder Tagen bekommen?
+- Wollen wir ergänzend einen öffentlichen Kartoffeldatensatz über Kaggle o. ä. einbeziehen, z. B. für seltene Klassen oder gesunde Kartoffeln?
+
+Mögliche externe Quellen:
+
+- [Potato Disease Recognition Dataset](https://www.kaggle.com/datasets/sujaykapadnis/potato-disease-recognition-dataset)
+- [Healthy Potato Image](https://www.kaggle.com/datasets/mehedihasanmridha/healthy-potato-image)
 
 Entscheidung heute:
 
 - Ob und wie zusätzliche reale Daten aufgenommen werden
 - Welche Situationen zwingend zusätzlich erfasst werden sollen
 - Ob das aktuelle Setup nur ein Startdatensatz ist oder schon die Hauptdatenbasis
+- Ob externe Kaggle-Datensätze nur ergänzend im Training genutzt werden (nicht für Validation/Test)
 
 Empfehlung:
 
 - Wenn möglich sollten neue Daten in Aufnahmeblöcken gesammelt werden, damit wir später sinnvoll nach Sessions oder Chargen splitten können.
+- Externe Datensätze (Kaggle) nur ergänzend im Training verwenden und wegen abweichender Aufnahmebedingungen (Domain Shift) sowie Lizenzfragen kritisch prüfen.
 
 ## 5. Definition eines repräsentativen Validation- und Test-Sets
 
@@ -229,7 +237,27 @@ Entscheidung heute:
 - Bewertungsgrenze des Systems definieren
 - Festlegen, dass nur visuell sichtbare Informationen der Einzelansicht beurteilbar sind
 
-## 12. Praktische Metadaten, die wir ab jetzt sammeln sollten
+## 12. Mögliches Edge-Deployment auf NVIDIA Jetson
+
+Als zusätzliche Idee steht im Raum, die spätere Implementierung auf einem NVIDIA Jetson laufen zu lassen, damit die Inferenz direkt am Band ohne externen Rechner möglich wäre. Wir sollten heute nur klären, welchen Stellenwert das im Projekt bekommt.
+
+Zu klären:
+
+- Ist ein Edge-Gerät wie der Jetson für den realen Einsatz überhaupt vorgesehen oder wünschenswert?
+- Welche Bandgeschwindigkeit bzw. welcher Durchsatz müsste auf dem Gerät real erreicht werden?
+- Ist uns der hohe Setup-Aufwand (JetPack, TensorRT, Treiber, Kamera-Integration) den Projektnutzen wert?
+- Reicht es fachlich, nur die Machbarkeit anhand der Hardware-Specs zu bewerten, statt ein echtes Deployment umzusetzen?
+
+Entscheidung heute:
+
+- Festlegen, ob der Jetson ein echtes Projektziel, ein optionales Zusatzexperiment oder nur eine Machbarkeitsbewertung wird
+- Falls nur Bewertung: festlegen, welche Kennzahlen (Latenz, Durchsatz, Speicher, nötige Modelloptimierung) wir gegen die Specs prüfen
+
+Empfehlung:
+
+- Wegen des hohen Setup-Aufwands zunächst nur eine Machbarkeitsbewertung auf Basis der Hardware-Specs einplanen und ein reales Deployment erst entscheiden, wenn die Modellwahl und die Latenzanforderungen feststehen.
+
+## 13. Praktische Metadaten, die wir ab jetzt sammeln sollten
 
 Wenn wir weitere Daten aufnehmen, sollten wir gleich die richtigen Zusatzinformationen mitschreiben.
 
@@ -252,7 +280,7 @@ Entscheidung heute:
 - Welche Metadaten realistisch erfassbar sind
 - Welche davon Pflichtfelder für neue Aufnahmen werden
 
-## 13. Konkrete Entscheidungen, die wir am Ende des Gesprächs getroffen haben sollten
+## 14. Konkrete Entscheidungen, die wir am Ende des Gesprächs getroffen haben sollten
 
 Am Ende des Gesprächs sollten wir idealerweise diese Punkte entschieden haben:
 
@@ -267,8 +295,9 @@ Am Ende des Gesprächs sollten wir idealerweise diese Punkte entschieden haben:
 - Rolle von Roboflow im Workflow
 - Umgang mit Augmentation und synthetischen Daten
 - wichtigste Erfolgsmetriken aus fachlicher Sicht
+- Stellenwert eines Jetson-Edge-Deployments (echtes Ziel, Zusatzexperiment oder nur Machbarkeitsbewertung)
 
-## 14. Empfohlene Kurzfassung für das Gespräch
+## 15. Empfohlene Kurzfassung für das Gespräch
 
 Wenn wenig Zeit ist, sollten wir mindestens diese Kernfragen beantworten:
 
@@ -282,8 +311,9 @@ Wenn wenig Zeit ist, sollten wir mindestens diese Kernfragen beantworten:
 8. Welche Modelle vergleichen wir final?
 9. Welche Fehler sind in der Praxis am kritischsten?
 10. Welche Rolle spielt Roboflow im finalen Workflow?
+11. Soll der Jetson ein echtes Ziel sein oder nur als Machbarkeitsbewertung einfließen?
 
-## 15. Persönliche Empfehlung für eure Richtung
+## 16. Persönliche Empfehlung für eure Richtung
 
 Wenn ich eurem Projekt jetzt eine klare Richtung geben müsste, würde ich heute Abend auf folgende Zielentscheidung hinarbeiten:
 

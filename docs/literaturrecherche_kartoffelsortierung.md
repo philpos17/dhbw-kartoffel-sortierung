@@ -159,6 +159,8 @@ Nach Zusammenführung von `bad` und `cut` beträgt das aktuelle ungefähre Insta
 
 Copy-Paste und synthetische Daten können helfen, müssen aber durch Real-only-Ablationen geprüft werden. Augmentation erfolgt ausschließlich nach dem Split und nur im Training. Validation, Operational Test und Challenge Set bleiben vollständig real und unverändert.
 
+Öffentliche Zusatzdatensätze (z. B. über Kaggle) können seltene Klassen oder Defekttypen anreichern, etwa [Potato Disease Recognition Dataset](https://www.kaggle.com/datasets/sujaykapadnis/potato-disease-recognition-dataset) und [Healthy Potato Image](https://www.kaggle.com/datasets/mehedihasanmridha/healthy-potato-image). Sie stammen jedoch aus anderen Aufnahmebedingungen (Einzelobjekte, abweichende Beleuchtung und Hintergründe) und entsprechen damit dem in [3], [11] und [14] beschriebenen Domain-Shift-Problem. Solche Daten dürfen daher nur ergänzend im Training genutzt werden, während Validation und Test auf eigenen Banddaten verbleiben; zusätzlich sind Lizenz- und Nutzungsbedingungen zu prüfen.
+
 ## Prüfung der Forschungslücke
 
 Die Literatur deckt bereits ab:
@@ -312,6 +314,10 @@ Regeln:
 
 Die bisherigen Roboflow-Werte sind nur Vorversuche, solange Dataset-Version, Split und Klassenmapping nicht identisch sind.
 
+Optionales Edge-Deployment:
+
+Als Zusatzidee steht im Raum, die spätere Inferenz auf einem NVIDIA Jetson direkt am Band laufen zu lassen. Wegen des hohen Setup-Aufwands (JetPack, TensorRT, Treiber, Kamera-Integration) ist unklar, ob dies Teil des Projekts wird; realistisch ist zunächst nur eine Machbarkeitsbewertung anhand der Hardware-Specs. Falls relevant, sollte die End-to-End-Latenz zusätzlich auf der Jetson-Zielhardware (inkl. TensorRT-Konvertierung und ggf. Quantisierung) gemessen und gegen die geforderte Bandgeschwindigkeit gestellt werden. Kompakte YOLO-Varianten sind hier gegenüber größeren Transformer-Detektoren tendenziell im Vorteil.
+
 ### Augmentation
 
 Konservative Standardaugmentation:
@@ -371,7 +377,7 @@ Mit dem Landwirt klären:
 8. Welche Dichte, Überdeckung und Bandgeschwindigkeit treten real auf?
 9. Wie werden übersehener Stein und falsch ausgeworfene Kartoffel kostenmäßig gewichtet?
 10. Soll nur sichtbare Oberflächenqualität beurteilt werden?
-11. Welche Zielhardware und maximale End-to-End-Latenz gelten?
+11. Welche Zielhardware und maximale End-to-End-Latenz gelten? Insbesondere: Ist ein Edge-Deployment auf NVIDIA Jetson vorgesehen, oder reicht eine Machbarkeitsbewertung anhand der Hardware-Specs (Latenz, Durchsatz, Speicher, Modelloptimierung)?
 12. Ist später eine Wendevorrichtung oder zweite Kamera möglich?
 
 Durch neue Daten zu beantworten:
