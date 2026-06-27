@@ -7,6 +7,9 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
+# Office temporäre Sperrdateien
+~$*
+
 # Daten, Exports, Reports (Struktur via .gitkeep behalten)
 data/raw/*
 data/interim/*
