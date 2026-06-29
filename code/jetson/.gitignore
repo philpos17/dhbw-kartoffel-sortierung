@@ -1,0 +1,24 @@
+# Environments
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Models & Weights
+# Do not upload large binary files to Git!
+models/*.pt
+models/*.onnx
+models/*.engine
+!models/.keep
+
+# Logs
+*.log
+setup_cuda_*.log
+
+# System
+.DS_Store
