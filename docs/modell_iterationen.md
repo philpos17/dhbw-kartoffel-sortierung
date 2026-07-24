@@ -85,12 +85,16 @@ Objekte** — sie erzeugt keine neue Information über die Erscheinungsvielfalt 
 |---|---|---|---|---|---|
 | 1 | Baseline (YOLOv8n, 50 ep) | 0.636 | 0.09 | 0.25 | – |
 | 2 | + handgelabelte Daten (v8); **cos_lr/mixup NICHT aktiv** | ~0.64 | 0.04 | 0.00 | ep 23 |
-| 3 | + Copy-Paste + cos_lr + mixup **aktiv** | **0.72** | **0.245** | **0.741** | ep 59 |
-| 4 | Multi-Modell-Benchmark, imgsz=768, cls=0.7, bad-gewichtetes Copy-Paste | *(läuft)* | *(offen)* | *(offen)* | – |
+| 3 | + Copy-Paste + cos_lr + mixup **aktiv** (YOLOv8n) | **0.72** | **0.245** | **0.741** | ep 59 |
+| 4 | Benchmark-Sieger **YOLO11s**, imgsz=768, cls=0.7, bad-gewichtetes Copy-Paste | **0.746** | **0.878** | **0.875** | ep 96 |
 
 **Wichtigste Lektion (Iteration 3):** Die Copy-Paste-Augmentierung + aktivierte LR/mixup-Hebel
 haben **`cut` von 0.00 auf 0.74 Recall** gebracht und `bad` etwa verdreifacht. Damit ist die
 Kernhypothese bestätigt: Defekterkennung war ein **Daten-/Instanzproblem**.
+
+**Wichtigste Lektion (Iteration 4):** Mit `YOLO11s` + höherer Auflösung + gezielter
+Augmentierung stieg die **`bad`-Recall auf 0.878** (vorher 0.245) — der größte Sprung des
+Projekts. Allerdings zu **Lasten der `bad`-Precision** (massive False Positives, siehe 5.2).
 
 ---
 
@@ -111,6 +115,50 @@ Kernhypothese bestätigt: Defekterkennung war ein **Daten-/Instanzproblem**.
   Per-Klassen-Ausgabe und laufender Bestenliste.
 - **Warum:** Frühes Feedback; defekte Läufe fallen sofort auf, statt erst nach Stunden.
   Die Vergleichszelle nutzt die gesammelten Ergebnisse weiter (keine doppelte Validierung).
+
+### 5.2 Ergebnis-Detail: Sieger YOLO11s (Iteration 4)
+
+**Konfiguration:** `yolo11s.pt`, `imgsz=768`, `epochs=100` (Early Stop bei **96**,
+`patience=20`), `batch=0.85`, `cache=True`, `cos_lr=True`, `mixup=0.15`, `cls=0.7`, Datensatz v8.
+
+**Per-Klassen-Auswertung (bestes Modell ≈ Epoche 76):**
+
+| Klasse | #Val | Recall | AP@0.5 | ggü. Iteration 3 |
+|---|---|---|---|---|
+| `bad` | 49 | **0.878** | **0.441** | Recall 0.245 → 0.878 (**3.6×**), AP 0.214 → 0.441 |
+| `cut` | 8 | **0.875** | 0.559 | Recall 0.741 → 0.875 |
+| `potato` | 1504 | 0.995 | 0.995 | ~gleich |
+| `stone` | 35 | 0.800 | 0.989 | Recall 1.00 → 0.80 (Regression) |
+| **gesamt** | 1596 | — | **0.746** | mAP@0.5 0.72 → 0.746 |
+
+**Trainingsdynamik:** glatte Konvergenz; bestes mAP@0.5:0.95 bei Epoche 76 (0.611). Der
+scharfe Abfall des `train/box_loss` bei Epoche 91 (0.44 → 0.37) stammt von `close_mosaic=10`
+(Mosaic wird für die letzten 10 Epochen deaktiviert). Rechenkosten: ~90 s/Epoche →
+~2.4 h für dieses eine Modell (yolo11s + 768 px), vs. ~23 s/Epoche für die Nano-Baseline bei 640.
+
+**Warum YOLO11s gewann:** Das Benchmark sortiert nach **`bad`-Recall**; die höhere Kapazität
+gegenüber Nano half der visuell heterogenen `bad`-Klasse deutlich.
+
+#### 5.2.1 ⚠️ Kritischer Trade-off: `bad`-Precision bricht ein
+- Die **rohe** Konfusionsmatrix (Betriebspunkt conf=0.25) zeigt **1391 False-Positive-`bad`-Boxen**
+  auf Hintergrundregionen (zusätzlich 167 `potato`, 109 `cut`, 57 `stone`). Damit liegt die
+  `bad`-Precision am Standard-Betriebspunkt bei ≈ **0.03** — das Modell „ruft" überall `bad`.
+- **Ursache:** `cls=0.7` + `mixup` + **70/30-Gewichtung des Copy-Paste zugunsten `bad`** haben
+  das Modell zu sehr aggressiver `bad`-Vorhersage erzogen.
+- **Kein hoffnungsloser Fall, sondern ein Schwellen-Problem:** Die PR-Kurve zeigt für `bad`
+  eine Precision von ~0.9 bei niedriger Recall und ~0.5 um Recall 0.37–0.5. Ein brauchbarer
+  Betriebspunkt existiert bei **höherem Confidence-Schwellenwert** (siehe Schwellen-Analyse, Abschnitt 6).
+- **Konsequenz:** Recall allein ist irreführend; für die Bewertung/Deployment muss der
+  **`bad`-Confidence-Schwellenwert bewusst gewählt** werden (Recall vs. Fehlauswurfrate).
+
+#### 5.2.2 Regressionen / Vorbehalte
+- **`stone`-Recall 1.00 → 0.80:** 7 von 35 Steinen werden als `potato` vorhergesagt — kleine,
+  aber echte Regression (beobachten).
+- **`cut` AP scheinbar gesunken (0.688 → 0.559):** bei nur **8** Val-Instanzen statistisches
+  Rauschen; die Recall stieg.
+- **Konfundiertes Experiment:** Iteration 4 änderte Modell (`yolo11s`), Auflösung (768),
+  `cls` (0.7) und Copy-Paste-Gewichtung gleichzeitig → der `bad`-Sprung ist **keinem einzelnen
+  Faktor** zuzuordnen (für eine saubere Ablation separat testen).
 
 ---
 
@@ -169,7 +217,10 @@ Kernhypothese bestätigt: Defekterkennung war ein **Daten-/Instanzproblem**.
 - [ ] Mehr echte `bad`- und besonders `cut`-Bilder labeln (Train **und** Val).
 - [ ] Val-Set auf ~30–50 echte Instanzen je Defektklasse bringen (verlässliche Metriken).
 - [ ] Roboflow-Export auf **„Fit"** umstellen; ggf. native/höhere Auflösung.
-- [ ] Iteration-4-Benchmark auswerten und Gewinner-Architektur voll austrainieren.
+- [x] Iteration-4-Benchmark ausgewertet → Sieger **YOLO11s** (bad-Recall 0.878).
+- [ ] **`bad`-Precision-Problem lösen:** Betriebspunkt/Confidence-Schwelle für `bad` bewusst
+      wählen (1391 False Positives bei conf=0.25); ggf. Copy-Paste-Gewichtung entschärfen.
+- [ ] `stone`-Regression (Recall 0.80) im Auge behalten.
 - [ ] Klassenspezifische Confidence-Schwellen in der Jetson-Nachverarbeitung umsetzen.
 - [ ] Gewinner-Modell für den Jetson exportieren (z. B. TensorRT/FP16).
 - [ ] Sicherstellen, dass die Jetson-Vorverarbeitung das Roboflow-Preprocessing repliziert.
