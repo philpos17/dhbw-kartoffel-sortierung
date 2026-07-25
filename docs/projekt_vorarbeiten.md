@@ -49,7 +49,7 @@ https://github.com/user-attachments/assets/8d01e8c6-1edd-42d0-8253-a1c278131b8d
 - **Proposed Solution:** For future operation, the use of a professional industrial camera (preferably with a global shutter and higher resolution) is recommended, which would likely remedy the situation.
 
 ## 5. Data Processing and Model Training in Roboflow
-- **Upload & Dataset:** All collected images were uploaded to the free platform **Roboflow**. The final dataset on the platform comprises:
+- **Upload & Dataset:** All collected images were uploaded to the free platform **Roboflow**. The dataset is publicly available as an open-source project: [Potato Sorting on Conveyor Dataset (Roboflow Universe)](https://universe.roboflow.com/ms-workspace-m1gci/potato-sorting-on-conveyor). The final dataset on the platform comprises:
   - **855 images** (Median resolution: 1920x1080)
   - **17,511 annotations** in total (average of 20.5 bounding boxes per image)
   - **Class distribution of labeled objects:** 
