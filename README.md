@@ -1,144 +1,144 @@
-# dhbw-kartoffel-sortierung
+# dhbw-kartoffel-sortierung (Potato Sorting)
 
-## Projektüberblick
+## Project Overview
 
-Dieses Projekt entsteht im Rahmen eines Abschlussprojekts einer Vorlesung. Ziel ist es, einen realen Anwendungsfall aus der Landwirtschaft mit Methoden des Machine Learning bzw. Computer Vision zu bearbeiten.
+This project is part of a final university course project. The goal is to address a real-world agricultural use case using Machine Learning and Computer Vision methods.
 
-Der Use Case stammt von einem Kartoffelbauernhof. Dort werden Kartoffeln aktuell manuell sortiert. Unterschieden werden dabei verwertbare Kartoffeln, beschädigte oder schlechte Kartoffeln sowie Steine bzw. Fremdkörper. Die manuelle Sortierung ist zeitaufwendig und personalintensiv. Ziel des Projekts ist es, diesen Prozess durch ein bildbasiertes System zu unterstützen oder teilweise zu automatisieren.
+The use case originates from a potato farm, where potatoes are currently sorted manually. The process involves distinguishing between usable potatoes, damaged or bad potatoes, and stones or foreign objects. Manual sorting is time-consuming and labor-intensive. The aim of this project is to support or partially automate this process using an image-based system.
 
-## Problemstellung
+## Problem Statement
 
-Untersucht wird, ob sich Kartoffeln und unerwünschte Objekte auf einem Förderbandbild zuverlässig mit Computer Vision erkennen und klassifizieren lassen.
+The project investigates whether potatoes and unwanted objects on a conveyor belt can be reliably detected and classified using Computer Vision.
 
-Aktuell betrachten wir ein Object-Detection-Setup mit den Klassen:
+Currently, we are considering an Object Detection setup with the following classes:
 
 - `potato`
 - `bad`
 - `cut`
 - `stone`
 
-Eine offene fachliche Frage ist noch, ob `cut` langfristig als eigene Klasse bestehen bleibt oder als Unterkategorie von `bad` behandelt werden sollte.
+An open technical question is whether `cut` should remain a separate class in the long run or be treated as a subcategory of `bad`.
 
-## Zielsetzung
+## Objectives
 
-Das Projektziel ist die Entwicklung und Bewertung eines Prototyps zur automatischen Erkennung und Sortierung von Kartoffeln und Fremdkörpern auf Bildern eines fließbandähnlichen Aufbaus.
+The project goal is the development and evaluation of a prototype for the automatic detection and sorting of potatoes and foreign objects in images of a conveyor belt setup.
 
-Dazu sollen insbesondere folgende Fragen beantwortet werden:
+In particular, the following questions are to be answered:
 
-- Ist Object Detection für diesen Use Case geeignet?
-- Welche Modellarchitektur liefert auf dem vorhandenen Datensatz die besten Ergebnisse?
-- Wie repräsentativ ist der aktuelle Datensatz für den späteren realen Einsatz?
-- Welche Schwächen, Verzerrungen und Grenzen besitzt der Datensatz?
-- Welche Metriken eignen sich zur Bewertung des Systems?
+- Is Object Detection suitable for this use case?
+- Which model architecture delivers the best results on the available dataset?
+- How representative is the current dataset for future real-world application?
+- What are the weaknesses, biases, and limitations of the dataset?
+- Which metrics are suitable for evaluating the system?
 
-## Datensatz
+## Dataset
 
-> **Detaillierte Einblicke in den physischen Aufbau, Kamera-Winkel und den Prozess der Bildaufnahme findet ihr in den [Projektvorarbeiten](docs/projekt_vorarbeiten.md#3-setup-zur-bildakquise)**
+> **Detailed insights into the physical setup, camera angles, and the image acquisition process can be found in the [Project Preparations](docs/projekt_vorarbeiten.md#3-image-acquisition-setup)**
 
-Der aktuelle Datensatz wurde in Roboflow verwaltet und enthält derzeit:
+The current dataset was managed in Roboflow and currently contains:
 
-- `855` Bilder
-- `17.511` Annotationen
-- `4` Klassen
-- durchschnittlich `20,5` Objekte pro Bild
-- Bildformat überwiegend `1920 x 1080`
+- `855` images
+- `17,511` annotations
+- `4` classes
+- an average of `20.5` objects per image
+- image resolution predominantly `1920 x 1080`
 
-Aktuelle Klassenverteilung laut bisherigem Stand:
+Current class distribution:
 
-- `potato`: 16.271
+- `potato`: 16,271
 - `stone`: 778
 - `bad`: 399
 - `cut`: 63
 
-Wichtiger Hinweis:
-Der Datensatz ist vermutlich noch nicht vollständig repräsentativ für den realen späteren Einsatz. Nach aktuellem Stand wurden Kartoffeln auf ein Band gelegt, während Steine und beschädigte Beispiele teilweise künstlich ergänzt wurden. Die Repräsentativität des Datensatzes und insbesondere des Validation Sets muss im Projekt kritisch reflektiert werden.
+Important note:
+The dataset is likely not yet fully representative of the actual real-world application. As it stands, potatoes were placed on a belt, while stones and damaged examples were sometimes artificially added. The representativeness of the dataset, especially the validation set, must be critically reflected upon during the project.
 
-### Optionale externe Datenquellen (Kaggle u. ä.)
+### Optional External Data Sources (Kaggle etc.)
 
-Ergänzend könnte ein öffentlicher Kartoffeldatensatz über Kaggle oder ähnliche Plattformen bezogen werden, etwa um seltene Klassen anzureichern, Defekttypen abzudecken oder zusätzliche Beispiele für gesunde Kartoffeln zu erhalten. Beispiele:
+In addition, a public potato dataset could be obtained via Kaggle or similar platforms, for instance to enrich rare classes, cover defect types, or obtain additional examples of healthy potatoes. Examples:
 
 - [Potato Disease Recognition Dataset](https://www.kaggle.com/datasets/sujaykapadnis/potato-disease-recognition-dataset)
 - [Healthy Potato Image](https://www.kaggle.com/datasets/mehedihasanmridha/healthy-potato-image)
 
-Wichtig: Solche Datensätze stammen aus anderen Aufnahmebedingungen (Beleuchtung, Hintergrund, Einzelobjekt statt dicht belegtes Band) und dürfen daher nur ergänzend im Training verwendet werden. Validation und Operational Test sollten weiterhin auf eigenen, realistischen Banddaten basieren, um einen Domain Shift nicht zu verschleiern. Lizenz und Nutzungsbedingungen der jeweiligen Quelle sind vor der Verwendung zu prüfen.
+Important: Such datasets originate from different recording conditions (lighting, background, single object instead of a densely packed belt) and should therefore only be used as supplementary material during training. Validation and operational testing should continue to rely on our own, realistic conveyor belt data to avoid obscuring domain shifts. Licensing and terms of use of the respective source must be checked before use.
 
-## Bisherige Experimente in Roboflow
+## Previous Experiments in Roboflow
 
-Bisher wurden in Roboflow mehrere Object-Detection-Modelle getestet.
+Several object detection models have been tested in Roboflow so far.
 
-### Ergebnisse
+### Results
 
-| Modell | Typ | Datum | mAP@50 | Precision | Recall | F1 |
+| Model | Type | Date | mAP@50 | Precision | Recall | F1 |
 |---|---|---|---:|---:|---:|---:|
-| My First Project 7 | RF-DETR Small | 13.07.2026 | 92.2% | 92.9% | 90.4% | 91.6% |
-| My First Project 6 | RF-DETR Small | 31.05.2026 | 75.1% | 84.2% | 76.1% | 80.0% |
-| My First Project 4 | YOLOv11 Nano | 31.05.2026 | 72.2% | 68.3% | 76.4% | 72.1% |
-| My First Project 3 | RF-DETR Medium | 17.05.2026 | 74.6% | 85.3% | 75.8% | 80.3% |
-| My First Project 2 | RF-DETR Medium | 16.05.2026 | 66.7% | 66.3% | 65.7% | 66.0% |
-| My First Project 1 | RF-DETR Small | 16.05.2026 | 50.4% | 48.5% | 50.0% | 49.3% |
+| My First Project 7 | RF-DETR Small | Jul 13, 2026 | 92.2% | 92.9% | 90.4% | 91.6% |
+| My First Project 6 | RF-DETR Small | May 31, 2026 | 75.1% | 84.2% | 76.1% | 80.0% |
+| My First Project 4 | YOLOv11 Nano | May 31, 2026 | 72.2% | 68.3% | 76.4% | 72.1% |
+| My First Project 3 | RF-DETR Medium | May 17, 2026 | 74.6% | 85.3% | 75.8% | 80.3% |
+| My First Project 2 | RF-DETR Medium | May 16, 2026 | 66.7% | 66.3% | 65.7% | 66.0% |
+| My First Project 1 | RF-DETR Small | May 16, 2026 | 50.4% | 48.5% | 50.0% | 49.3% |
 
-Erste Beobachtung:
-Die bisherigen Ergebnisse zeigen, dass der Use Case grundsätzlich lernbar ist. Gleichzeitig deuten die Werte darauf hin, dass Datensatzqualität, Klassenbalance und Repräsentativität einen starken Einfluss auf die Modellleistung haben.
+Initial Observation:
+The results so far show that the use case is fundamentally learnable. At the same time, the values indicate that dataset quality, class balance, and representativeness have a strong influence on model performance.
 
-## Geplanter Projektansatz
+## Planned Project Approach
 
-Das Projekt soll in mehreren Schritten bearbeitet werden:
+The project will be processed in several steps:
 
-1. Problemstellung und Zielbild fachlich präzisieren
-2. Datensatz dokumentieren und kritisch bewerten
-3. Related Work zu Agrar-Object-Detection recherchieren
-4. Daten exportieren und reproduzierbare Trainingspipeline außerhalb von Roboflow aufbauen
-5. Baseline-Modell im Jupyter Notebook trainieren bzw. evaluieren
-6. Modelle vergleichen
-7. Ergebnisse diskutieren und Grenzen des Ansatzes reflektieren
+1. Technically specify the problem statement and target picture
+2. Document and critically evaluate the dataset
+3. Research related work on agricultural object detection
+4. Export data and set up a reproducible training pipeline outside of Roboflow
+5. Train and evaluate a baseline model in a Jupyter Notebook
+6. Compare models
+7. Discuss results and reflect on the limitations of the approach
 
-## Tools und Arbeitsumgebung
+## Tools and Workspace
 
-Geplant ist folgende Arbeitsumgebung:
+The planned workspace is as follows:
 
-- `Roboflow` für Annotation, Datensatzversionierung und erste Experimente
-- `Jupyter Notebook` für dokumentierte und reproduzierbare Analyse
-- `GitHub` für Zusammenarbeit und Versionsverwaltung
-- `Google Colab` oder lokale Rechner für Training und Auswertung
+- `Roboflow` for annotation, dataset versioning, and initial experiments
+- `Jupyter Notebook` for documented and reproducible analysis
+- `GitHub` for collaboration and version control
+- `Google Colab` or local machines for training and evaluation
 
-## Reproduzierbarkeit
+## Reproducibility
 
-Ein wichtiger Teil des Projekts ist die Überführung der bisher in Roboflow geleisteten Arbeit in eine nachvollziehbare Projektstruktur. Dafür sollen insbesondere folgende Punkte dokumentiert werden:
+An important part of the project is transferring the work previously done in Roboflow into a comprehensible project structure. In particular, the following points must be documented:
 
-- verwendete Datensatzversion
-- Klassen und Labeldefinitionen
-- Preprocessing- und Augmentierungsentscheidungen
-- trainierte Modellarchitekturen
-- verwendete Hyperparameter
-- Evaluationsergebnisse
+- dataset version used
+- classes and label definitions
+- preprocessing and augmentation decisions
+- trained model architectures
+- hyperparameters used
+- evaluation results
 
-## Mögliche Zielhardware: Edge-Deployment auf NVIDIA Jetson (optional)
+## Potential Target Hardware: Edge Deployment on NVIDIA Jetson (Optional)
 
-Als zusätzliche, noch nicht verbindliche Idee steht im Raum, die spätere Implementierung auf einem NVIDIA Jetson (z. B. Orin Nano / Orin NX) laufen zu lassen, um eine Inferenz direkt am Förderband ohne externen Rechner zu ermöglichen.
+As an additional, non-binding idea, there is the possibility of running the final implementation on an NVIDIA Jetson (e.g. Orin Nano / Orin NX) to enable inference directly at the conveyor belt without an external computer.
 
-Ob dies tatsächlich Teil des Projekts wird, ist offen, da der Setup-Aufwand (JetPack, TensorRT-Konvertierung, Treiber- und Kamera-Integration) hoch ist. Realistisch ist daher zunächst nur eine **Machbarkeitsbewertung auf Basis der Hardware-Specs**, statt eines vollständigen produktiven Deployments.
+Whether this actually becomes part of the project remains open, as the setup effort (JetPack, TensorRT conversion, driver and camera integration) is high. Realistically, only a **feasibility assessment based on hardware specs** is expected initially, rather than a full production deployment.
 
-Zu betrachten wären insbesondere:
+Key aspects to consider would be:
 
-- erwartete Inferenzlatenz und Durchsatz der Kandidatenmodelle (kompaktes YOLO vs. RF-DETR) auf Jetson-Klasse-Hardware
-- verfügbarer Speicher und Rechenleistung (TOPS) im Verhältnis zur geforderten Bandgeschwindigkeit
-- Notwendigkeit von Modelloptimierung (Quantisierung, TensorRT, Modellgröße)
-- Aufwand für Toolchain und Integration gegenüber dem Projektnutzen
+- expected inference latency and throughput of candidate models (compact YOLO vs. RF-DETR) on Jetson-class hardware
+- available memory and computing power (TOPS) relative to the required belt speed
+- necessity of model optimization (quantization, TensorRT, model size)
+- effort for the toolchain and integration compared to the project's benefit
 
-Diese Bewertung kann auch dann ein wertvolles Projektergebnis sein, wenn am Ende kein reales Jetson-Deployment umgesetzt wird.
+This assessment can be a valuable project result even if a real Jetson deployment is ultimately not implemented.
 
-## Offene Fragen
+## Open Questions
 
-Die folgenden Punkte müssen noch geklärt oder geschärft werden:
+The following points still need to be clarified or refined:
 
-- Soll das Zielsystem 3 oder 4 Klassen unterscheiden?
-- Ist `cut` eine eigene Klasse oder Teil von `bad`?
-- Wie sieht die reale Klassenverteilung im Feld bzw. auf dem Band aus?
-- Wie sollte ein repräsentatives Validation- und Test-Set aussehen?
-- Können zusätzliche echte Daten aufgenommen werden?
-- Soll das Endziel eher Erkennung, Zählung oder tatsächliche Sortierentscheidung sein?
-- Soll ein Edge-Deployment auf NVIDIA Jetson Teil des Projekts werden oder nur als Machbarkeitsbewertung auf Basis der Hardware-Specs einfließen?
+- Should the target system distinguish 3 or 4 classes?
+- Is `cut` a separate class or part of `bad`?
+- What does the real class distribution look like in the field or on the belt?
+- What should a representative validation and test set look like?
+- Can additional real data be recorded?
+- Should the final goal be detection, counting, or actual sorting decisions?
+- Should an edge deployment on NVIDIA Jetson be part of the project, or only flow in as a feasibility assessment based on hardware specs?
 
-## Vorläufiges Fazit
+## Preliminary Conclusion
 
-Der Anwendungsfall ist praxisnah und eignet sich gut für ein Computer-Vision-Projekt. Die bisherigen Roboflow-Ergebnisse sind ein guter Ausgangspunkt. Der wichtigste nächste Schritt besteht darin, Problemdefinition, Datensatzqualität und Evaluationsstrategie sauber zu schärfen, damit die spätere Modellbewertung fachlich belastbar ist.
+The use case is practical and well-suited for a computer vision project. The Roboflow results so far provide a good starting point. The most important next step is to neatly refine the problem definition, dataset quality, and evaluation strategy so that the subsequent model evaluation is technically sound.
