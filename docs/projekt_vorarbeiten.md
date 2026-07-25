@@ -41,7 +41,7 @@ Um einheitliche Kriterien für das Labeln zu schaffen und Defekte klar zuzuordne
 ### Prozess der Datenerhebung (Video)
 Das folgende Video demonstriert den Aufnahme-Prozess am Band in Aktion:
 
-https://github.com/philpos17/dhbw-kartoffel-sortierung/raw/main/docs/assets/datenerfassung/datenerfassung_video.mov
+https://github.com/philpos17/dhbw-kartoffel-sortierung/raw/main/docs/assets/datenerfassung/datenerfassung_video_small.m4v
 
 ## 4. Erste Erkenntnisse und Herausforderungen
 - **Probleme bei der Fehlererkennung:** Es fiel auf, dass die Webcam spezifische Defekte wie schrumpelige Kartoffeln nicht gut abbilden und erkennen lässt.
