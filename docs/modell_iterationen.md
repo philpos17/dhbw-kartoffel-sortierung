@@ -160,6 +160,41 @@ gegenüber Nano half der visuell heterogenen `bad`-Klasse deutlich.
   `cls` (0.7) und Copy-Paste-Gewichtung gleichzeitig → der `bad`-Sprung ist **keinem einzelnen
   Faktor** zuzuordnen (für eine saubere Ablation separat testen).
 
+### 5.3 Finale Test-Set-Ergebnisse (unverzerrt)
+
+Einmalige Evaluierung des Siegermodells `yolo11s` (best.pt) auf dem **bisher unberührten
+Test-Split** (62 Bilder, 1203 Instanzen). Diese Zahlen wurden weder fürs Training noch für die
+Modellauswahl verwendet und sind daher die **ehrliche, publizierbare Leistungsschätzung**.
+
+| Klasse | #Test | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 |
+|---|---|---|---|---|---|
+| `bad` | 20 | 0.727 | 0.250 | 0.347 | 0.134 |
+| `cut` | 3 | 0.606 | 0.667 | 0.654 | 0.482 |
+| `potato` | 1089 | 0.995 | 0.995 | 0.995 | 0.979 |
+| `stone` | 91 | 0.977 | 0.956 | 0.980 | 0.905 |
+| **gesamt** | 1203 | 0.826 | 0.717 | **0.744** | **0.625** |
+
+**Interpretation:**
+- **Gute Generalisierung im Aggregat:** Test-mAP@0.5 = **0.744** ≈ Val-mAP@0.5 = 0.746. Es gibt
+  praktisch **kein Overfitting auf das Val-Set** auf Gesamtebene — der Modellauswahlprozess war sauber.
+- **`potato`/`stone` produktionsreif:** `potato` mAP@0.5 0.995, `stone` mAP@0.5 0.980
+  (Recall 0.956). Wichtig: die auf dem Val-Set beobachtete **`stone`-Regression (0.80)** war
+  **Val-Rauschen** (nur 35 Val-Instanzen); auf dem größeren Test-Split (91 Instanzen) ist `stone`
+  mit 0.956 Recall stabil. → Bedenken entschärft.
+- **`bad` bleibt die Schwachstelle:** Test-AP@0.5 = 0.347 (Val 0.441) — moderater, aber im
+  Rahmen des Rauschens liegender Rückgang. Die im Val-Set beobachtete „`bad`-Recall 0.878" galt
+  am Betriebspunkt conf=0.25 (mit massiven False Positives); am **F1-optimalen Schwellenwert**
+  liegt die Test-Recall nur bei **0.25** (Precision 0.727). Das ist **kein Widerspruch**, sondern
+  derselbe Precision/Recall-Trade-off aus anderer Perspektive: hohe `bad`-Recall ist nur um den
+  Preis vieler Fehlalarme erreichbar → Betriebspunkt bewusst wählen.
+- **`cut` nicht bewertbar:** nur **3** echte Test-Instanzen (Recall 0.667 = 2 von 3). Statistisch
+  bedeutungslos.
+- **Kern-Limitierung:** Das Test-Set enthält nur **20 `bad`- und 3 `cut`-Instanzen**. Die Defekt-
+  Zahlen sind daher unverzerrt, aber **verrauscht**. Wichtigste Maßnahme bleibt: mehr echte
+  Defekte in **Test UND Val** labeln.
+
+**Publizierbare Kennzahl:** mAP@0.5 = **0.744**, mAP@0.5:0.95 = **0.625** (Gesamt, Test-Split).
+
 ---
 
 ## 6. Evaluierungs-Strategie
@@ -218,9 +253,10 @@ gegenüber Nano half der visuell heterogenen `bad`-Klasse deutlich.
 - [ ] Val-Set auf ~30–50 echte Instanzen je Defektklasse bringen (verlässliche Metriken).
 - [ ] Roboflow-Export auf **„Fit"** umstellen; ggf. native/höhere Auflösung.
 - [x] Iteration-4-Benchmark ausgewertet → Sieger **YOLO11s** (bad-Recall 0.878).
+- [x] Finale Test-Set-Evaluierung durchgeführt → Gesamt-mAP@0.5 **0.744**, mAP@0.5:0.95 **0.625**.
+- [x] `stone`-Regression geklärt: war Val-Rauschen, auf Test stabil (Recall 0.956).
 - [ ] **`bad`-Precision-Problem lösen:** Betriebspunkt/Confidence-Schwelle für `bad` bewusst
       wählen (1391 False Positives bei conf=0.25); ggf. Copy-Paste-Gewichtung entschärfen.
-- [ ] `stone`-Regression (Recall 0.80) im Auge behalten.
 - [ ] Klassenspezifische Confidence-Schwellen in der Jetson-Nachverarbeitung umsetzen.
 - [ ] Gewinner-Modell für den Jetson exportieren (z. B. TensorRT/FP16).
 - [ ] Sicherstellen, dass die Jetson-Vorverarbeitung das Roboflow-Preprocessing repliziert.

@@ -1,0 +1,2 @@
+exports/colab/**/*.pt filter=lfs diff=lfs merge=lfs -text
+exports/weights/**/*.pt filter=lfs diff=lfs merge=lfs -text

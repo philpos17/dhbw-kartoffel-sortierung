@@ -50,12 +50,38 @@ Current class distribution:
 - `bad`: 399
 - `cut`: 63
 
+Class distribution in the evaluation splits (real instances, from the YOLO export):
+
+| Class | Val | Test |
+|---|---:|---:|
+| `potato` | 1,504 | 1,089 |
+| `stone` | 35 | 91 |
+| `bad` | 49 | 20 |
+| `cut` | 8 | 3 |
+| **total** | 1,596 (77 images) | 1,203 (62 images) |
+
+Note: Roboflow's ×3 augmentation applies to the training images only (expanding the 855 source
+images to 2,287); val and test remain unaugmented. The copy-paste step in the Colab pipeline
+additionally generates synthetic `bad`/`cut` instances in the training set. Despite this enrichment,
+the distribution stays heavily imbalanced (`potato` ≈ 92.9 %, `cut` ≈ 0.4 %).
+
 Important note:
 The dataset is likely not yet fully representative of the actual real-world application. As it stands, potatoes were placed on a belt, while stones and damaged examples were sometimes artificially added. The representativeness of the dataset, especially the validation set, must be critically reflected upon during the project.
 
-### Optional External Data Sources (Kaggle etc.)
+### External Data Sources (implemented via Roboflow Universe)
 
-In addition, a public potato dataset could be obtained via Kaggle or similar platforms, for instance to enrich rare classes, cover defect types, or obtain additional examples of healthy potatoes. Examples:
+To enrich the rare defect classes (`bad`, `cut`), we searched **Roboflow Universe** for suitable
+potato-defect datasets. Public datasets that exactly match our setup (densely packed belt, metal
+rods, 4-class schema `potato/bad/cut/stone`) are rare — most use different acquisition conditions
+(single object, lab background) and incompatible class taxonomies (e.g. "Damaged", "Mechanical
+Injury", "Rot").
+
+Concretely implemented: **19 additional `bad`/`cut` images** were selected and **hand-labelled in
+our own schema** (instead of importing foreign labels) to guarantee correct class IDs. These flowed
+into dataset version **v8**. The gain is deliberately small and by no means covers the need — `cut`
+in particular remains the most critical gap with very few real instances.
+
+Other platforms such as Kaggle would also be possible sources, e.g.:
 
 - [Potato Disease Recognition Dataset](https://www.kaggle.com/datasets/sujaykapadnis/potato-disease-recognition-dataset)
 - [Healthy Potato Image](https://www.kaggle.com/datasets/mehedihasanmridha/healthy-potato-image)
@@ -80,17 +106,63 @@ Several object detection models have been tested in Roboflow so far.
 Initial Observation:
 The results so far show that the use case is fundamentally learnable. At the same time, the values indicate that dataset quality, class balance, and representativeness have a strong influence on model performance.
 
+## Model Development and Results (Reproducible Colab Pipeline)
+
+The Roboflow work was transferred into a reproducible training pipeline:
+[`code/colab/potato.ipynb`](code/colab/potato.ipynb). It covers the Roboflow download, class
+analysis, targeted copy-paste augmentation for the rare classes, multi-model training with
+immediate evaluation, model comparison, threshold analysis, and a single held-out test-set
+evaluation. **All design decisions and their rationale are documented in
+[`docs/modell_iterationen.md`](docs/modell_iterationen.md).**
+
+### Iteration history (validation)
+
+| Iter. | Development package | Val. mAP50 | `bad` AP50/R* | `cut` AP50/R* |
+|---|---|---:|---:|---:|
+| 1 | YOLOv8n, v6, 640 px, standard augmentation | .636 | .179/.090 | .393/.250 |
+| 2 | v8 with 19 manually relabelled images | .627 | .130/.040 | .389/.000 |
+| 3 | + Copy-Paste, mixup, cosine LR | .720 | .214/.245 | .688/.741 |
+| 4 | YOLO11s, 768 px, `cls=.7`, weighted Copy-Paste | .746 | .441/.878 | .559/.875 |
+
+\* R = Recall at the confusion-matrix operating point (conf 0.25); AP50 is threshold-independent.
+
+Key lever for the defect classes: the extreme class imbalance (`potato` ≫ `bad` ≫ `stone` ≫ `cut`)
+was not addressed by standard augmentation but by **targeted copy-paste instance synthesis**
+(training set only). Adding real data alone (Iteration 2) did **not** help — `bad` AP even regressed.
+
+### Model comparison (Iteration 4)
+
+`yolov8n`, `yolov8s`, `yolo11n`, `yolo11s` were compared under identical configuration, ranked by
+`bad` recall. **Winner: `yolo11s`** (more capacity for the visually heterogeneous `bad` class).
+
+### Final, unbiased test results (`yolo11s`, test split, 62 images / 1203 instances)
+
+| Class | #Test | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 |
+|---|---:|---:|---:|---:|---:|
+| `bad` | 20 | 0.727 | 0.250 | 0.347 | 0.134 |
+| `cut` | 3 | 0.606 | 0.667 | 0.654 | 0.482 |
+| `potato` | 1089 | 0.995 | 0.995 | 0.995 | 0.979 |
+| `stone` | 91 | 0.977 | 0.956 | 0.980 | 0.905 |
+| **all** | 1203 | 0.826 | 0.717 | **0.744** | **0.625** |
+
+- **Clean generalization:** test mAP@0.5 (0.744) ≈ val mAP@0.5 (0.746) → no significant overfitting
+  to the validation set.
+- **`potato`/`stone` production-ready** (mAP@0.5 0.995 / 0.980).
+- **Defect classes remain the weak, under-represented spot:** only 20 real `bad` and 3 `cut` test
+  instances → statistically noisy. Most important next step: label more real defects into train,
+  val **and** test.
+
 ## Planned Project Approach
 
-The project will be processed in several steps:
+The project is processed in several steps (current status):
 
-1. Technically specify the problem statement and target picture
-2. Document and critically evaluate the dataset
-3. Research related work on agricultural object detection
-4. Export data and set up a reproducible training pipeline outside of Roboflow
-5. Train and evaluate a baseline model in a Jupyter Notebook
-6. Compare models
-7. Discuss results and reflect on the limitations of the approach
+1. [x] Technically specify the problem statement and target picture
+2. [x] Document and critically evaluate the dataset
+3. [x] Research related work on agricultural object detection (see `docs/literaturrecherche_kartoffelsortierung.md`)
+4. [x] Export data and set up a reproducible training pipeline outside of Roboflow (`code/colab/potato.ipynb`)
+5. [x] Train and evaluate a baseline model in a Jupyter Notebook
+6. [x] Compare models (YOLOv8n/s, YOLO11n/s → winner YOLO11s)
+7. [~] Discuss results and reflect on the limitations of the approach (ongoing, see `docs/modell_iterationen.md`)
 
 ## Tools and Workspace
 
@@ -112,20 +184,38 @@ An important part of the project is transferring the work previously done in Rob
 - hyperparameters used
 - evaluation results
 
-## Potential Target Hardware: Edge Deployment on NVIDIA Jetson (Optional)
+## Target Hardware: Edge Deployment on NVIDIA Jetson
 
-As an additional, non-binding idea, there is the possibility of running the final implementation on an NVIDIA Jetson (e.g. Orin Nano / Orin NX) to enable inference directly at the conveyor belt without an external computer.
+The edge deployment went beyond a pure feasibility assessment: a project member contributed a
+working deployment pipeline for the **NVIDIA Jetson Orin Nano**. The code lives under
+[`code/jetson/`](code/jetson/) and is documented in [`code/jetson/README.md`](code/jetson/README.md).
 
-Whether this actually becomes part of the project remains open, as the setup effort (JetPack, TensorRT conversion, driver and camera integration) is high. Realistically, only a **feasibility assessment based on hardware specs** is expected initially, rather than a full production deployment.
+Implemented components:
 
-Key aspects to consider would be:
+- **Backend** ([`code/jetson/backend/`](code/jetson/backend/)): FastAPI/Uvicorn server with
+  WebSocket live-video streaming, API routes, and a simple database.
+- **Vision pipeline** ([`code/jetson/vision/`](code/jetson/vision/)): video capture (OpenCV),
+  YOLOv8 detection, and object tracking (ByteTrack); post-processing in `logic.py` (also the right
+  place for class-specific confidence thresholds).
+- **Hardware control** ([`code/jetson/hardware/`](code/jetson/hardware/)): GPIO control and an
+  ejector queue to physically remove detected objects.
+- **Frontend** ([`code/jetson/frontend/`](code/jetson/frontend/)): a simple web UI for model
+  selection and the live stream.
+- **Setup/toolchain**: `setup_jetson_cuda.sh` automates installation (venv, system dependencies,
+  compiling `torchvision`), including documented workarounds for known JetPack 6.1 / PyTorch
+  aarch64 compatibility issues.
 
-- expected inference latency and throughput of candidate models (compact YOLO vs. RF-DETR) on Jetson-class hardware
-- available memory and computing power (TOPS) relative to the required belt speed
-- necessity of model optimization (quantization, TensorRT, model size)
-- effort for the toolchain and integration compared to the project's benefit
+**Acceleration / model conversion:** for real-time inference (target 20+ FPS), the `.pt` weights
+trained in Colab are exported to TensorRT (`.engine`) **locally on the Jetson** (`half=True`).
+Note: TensorRT engines are hardware-bound and **cannot** be built in Colab and run on the Jetson —
+the conversion must happen on the device.
 
-This assessment can be a valuable project result even if a real Jetson deployment is ultimately not implemented.
+Target environment (see the compatibility matrix in the Jetson README): Ubuntu 22.04,
+JetPack 6.1 (r36.4), Python 3.10, TensorRT 10.3, Ultralytics ≥ 8.4.
+
+Open points for a productive deployment remain the real camera/belt integration, measuring latency
+and throughput against the required belt speed, and implementing the class-specific confidence
+thresholds (especially high `bad` recall) in post-processing.
 
 ## Open Questions
 
@@ -137,8 +227,14 @@ The following points still need to be clarified or refined:
 - What should a representative validation and test set look like?
 - Can additional real data be recorded?
 - Should the final goal be detection, counting, or actual sorting decisions?
-- Should an edge deployment on NVIDIA Jetson be part of the project, or only flow in as a feasibility assessment based on hardware specs?
+- How exactly should the class-specific confidence thresholds (especially high `bad` recall) be set in the Jetson post-processing and validated against the real camera/belt integration?
 
 ## Preliminary Conclusion
 
-The use case is practical and well-suited for a computer vision project. The Roboflow results so far provide a good starting point. The most important next step is to neatly refine the problem definition, dataset quality, and evaluation strategy so that the subsequent model evaluation is technically sound.
+The use case is practical and well-suited for a computer vision project. With the reproducible
+Colab pipeline and the model comparison, we showed that `potato` and `stone` are detected reliably
+(test mAP@0.5 ~0.98–0.995) and that the overall system generalizes cleanly (test ≈ validation). The
+decisive bottleneck is not the architecture but the **data situation of the defect classes**
+(`bad`, `cut`): they are strongly under-represented and too small in the val/test sets for robust
+metrics. The most important next step is therefore to label more real defect examples and to
+deliberately choose the operating point (confidence thresholds) for defect detection.

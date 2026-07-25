@@ -30,3 +30,12 @@ reports/tables/*
 *.pth
 *.onnx
 *.zip
+
+# Ausnahme: Colab-Experiment-Exporte versionieren
+#   Records + Plots normal, Modellgewichte (.pt) via Git LFS (siehe .gitattributes)
+!exports/colab/**/*.csv
+!exports/colab/**/*.yaml
+!exports/colab/**/*.png
+!exports/colab/**/*.jpg
+!exports/colab/**/*.pt
+!exports/weights/**/*.pt
