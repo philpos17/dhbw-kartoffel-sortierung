@@ -33,20 +33,22 @@ Dazu sollen insbesondere folgende Fragen beantwortet werden:
 
 ## Datensatz
 
+> **Detaillierte Einblicke in den physischen Aufbau, Kamera-Winkel und den Prozess der Bildaufnahme findet ihr in den [Projektvorarbeiten](docs/projekt_vorarbeiten.md#3-setup-zur-bildakquise)**
+
 Der aktuelle Datensatz wurde in Roboflow verwaltet und enthält derzeit:
 
-- `773` Bilder
-- `16.481` Annotationen
+- `855` Bilder
+- `17.511` Annotationen
 - `4` Klassen
-- durchschnittlich `21,3` Objekte pro Bild
+- durchschnittlich `20,5` Objekte pro Bild
 - Bildformat überwiegend `1920 x 1080`
 
 Aktuelle Klassenverteilung laut bisherigem Stand:
 
-- `potato`: 16.197
-- `bad`: 1.978
-- `stone`: 732
-- `cut`: 32
+- `potato`: 16.271
+- `stone`: 778
+- `bad`: 399
+- `cut`: 63
 
 Wichtiger Hinweis:
 Der Datensatz ist vermutlich noch nicht vollständig repräsentativ für den realen späteren Einsatz. Nach aktuellem Stand wurden Kartoffeln auf ein Band gelegt, während Steine und beschädigte Beispiele teilweise künstlich ergänzt wurden. Die Repräsentativität des Datensatzes und insbesondere des Validation Sets muss im Projekt kritisch reflektiert werden.
@@ -68,6 +70,7 @@ Bisher wurden in Roboflow mehrere Object-Detection-Modelle getestet.
 
 | Modell | Typ | Datum | mAP@50 | Precision | Recall | F1 |
 |---|---|---|---:|---:|---:|---:|
+| My First Project 7 | RF-DETR Small | 13.07.2026 | 92.2% | 92.9% | 90.4% | 91.6% |
 | My First Project 6 | RF-DETR Small | 31.05.2026 | 75.1% | 84.2% | 76.1% | 80.0% |
 | My First Project 4 | YOLOv11 Nano | 31.05.2026 | 72.2% | 68.3% | 76.4% | 72.1% |
 | My First Project 3 | RF-DETR Medium | 17.05.2026 | 74.6% | 85.3% | 75.8% | 80.3% |

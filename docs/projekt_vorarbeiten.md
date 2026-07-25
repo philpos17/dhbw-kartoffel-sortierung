@@ -7,8 +7,11 @@ Die Kartoffeln werden auf dem Feld mit einer Erntemaschine aus der Erde geholt, 
 **Das aktuelle Problem:**
 An dieser Station stehen derzeit bis zu vier Personen an den Bändern, deren Aufgabe es ist, schlechte Kartoffeln, Steine und Dreck manuell auszusortieren. Die verbleibenden guten Kartoffeln werden anschließend im Kühlhaus eingelagert. Wenn sie später je nach Kundenbedarf verpackt und verschickt werden, erfolgt vor dem Verpacken noch eine weitere manuelle Kontrollstufe. Dieser Prozess ist aktuell enorm personal- und zeitintensiv.
 
+![Beispiele von schlechten Stellen an Kartoffeln](./assets/datenerfassung/setup_2.jpg)
+![Beispiel einer schlechten, aufgeschnittenen Kartoffel](./assets/datenerfassung/setup_1.jpg)
+
 **Zielsetzung des Projekts:**
-Um diesen Personalbedarf zu reduzieren, soll der Sortierprozess automatisiert werden. Ein Kamerasystem soll die schlechten Kartoffeln sowie Fremdkörper (wie Steine) automatisch erkennen, um sie auszusortieren.
+Um diesen Personalbedarf zu reduzieren, soll der Sortierprozess automatisiert werden. Ein Kamerasystem soll die schlechten Kartoffeln sowie Fremdkörper (wie Steine) automatisch erkennen, um sie auszusortieren. Eine Ventilinsel, welche über die GPIO Pins des Jetson angeschlossen ist, übernimmt die Vereinzelung.
 
 ## 2. Projektkontext und Maschinenaufbau
 - **Aufbau der Maschine:** Die Anlage nutzt ein Förderband mit rotierenden Rollen. Dadurch drehen sich die Kartoffeln während des Vorwärtstransports, sodass das Kamerasystem sie von allen Seiten erfassen kann.
@@ -24,19 +27,36 @@ Um diesen Personalbedarf zu reduzieren, soll der Sortierprozess automatisiert we
   - Das Förderband wurde gut ausgeleuchtet.
   - Die Bandgeschwindigkeit wurde so langsam wie möglich eingestellt, um die Bildqualität zu maximieren.
 
+### Kamera-Blickwinkel am Förderband
+Um den Klassifikationsprozess möglichst realitätsnah zu simulieren, wurde folgendes Kamera-Setup aufgebaut, das den Blickwinkel auf das Band zeigt:
+
+![Kamera-Blick auf das Förderband 1](./assets/datenerfassung/setup_3.jpg)
+![Kamera-Blick auf das Förderband 2](./assets/datenerfassung/setup_4.jpg)
+
+### Klassifizierung von Defekten
+Um einheitliche Kriterien für das Labeln zu schaffen und Defekte klar zuzuordnen, wurden Referenzbeispiele für schlechte und beschädigte Kartoffeln definiert:
+
+
+
+### Prozess der Datenerhebung (Video)
+Das folgende Video demonstriert den Aufnahme-Prozess am Band in Aktion:
+
+[Video zur Datenerfassung herunterladen/ansehen](./assets/datenerfassung/datenerfassung_video.mov)
+
 ## 4. Erste Erkenntnisse und Herausforderungen
 - **Probleme bei der Fehlererkennung:** Es fiel auf, dass die Webcam spezifische Defekte wie schrumpelige Kartoffeln nicht gut abbilden und erkennen lässt.
 - **Ursachen:** Die Auflösung der Webcam ist zu gering. Zudem führt die zu hohe Belichtungszeit/Verschlusszeit der Kamera bei den sich bewegenden Kartoffeln zu leicht verschwommenen Bildern (Motion Blur).
 - **Lösungsansatz:** Für den zukünftigen Betrieb wird der Einsatz einer professionellen Industriekamera (vorzugsweise mit Global Shutter und höherer Auflösung) empfohlen, was voraussichtlich Abhilfe schaffen würde.
 
 ## 5. Datenverarbeitung und Modelltraining in Roboflow
-- **Upload & Datensatz:** Alle gesammelten Bilder wurden in die Plattform **Roboflow** hochgeladen. Der finale Datensatz auf der Plattform umfasst:
-  - **772 Bilder** (Median Auflösung: 1920x1080)
-  - **16.427 Annotations** insgesamt (im Durchschnitt 21,3 Bounding Boxes pro Bild)
+- **Upload & Datensatz:** Alle gesammelten Bilder wurden in die kostenlose Plattform **Roboflow** hochgeladen. Der finale Datensatz auf der Plattform umfasst:
+  - **855 Bilder** (Median Auflösung: 1920x1080)
+  - **17.511 Annotations** insgesamt (im Durchschnitt 20,5 Bounding Boxes pro Bild)
   - **Klassenverteilung der gelabelten Objekte:** 
-    - 1106x *potato*
-    - 774x *bad*
-    - 74x *stone*
+    - 16271x *potato*
+    - 778x *stone*
+    - 399x *bad*
+    - 63x *cut*
   *(Hinweis: Da schrumpelige Kartoffeln aufgrund der Kamera-Unschärfe schwer zu erkennen waren, wurden diese Defekte beim Labeling vermutlich nur teilweise erfasst).*
 - **Labeling-Prozess:**
   1. Zunächst wurden die ersten 200 Bilder manuell gelabelt, um eine Datengrundlage zu schaffen.
