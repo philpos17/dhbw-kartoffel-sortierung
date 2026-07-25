@@ -7,8 +7,8 @@ Die Kartoffeln werden auf dem Feld mit einer Erntemaschine aus der Erde geholt, 
 **Das aktuelle Problem:**
 An dieser Station stehen derzeit bis zu vier Personen an den Bändern, deren Aufgabe es ist, schlechte Kartoffeln, Steine und Dreck manuell auszusortieren. Die verbleibenden guten Kartoffeln werden anschließend im Kühlhaus eingelagert. Wenn sie später je nach Kundenbedarf verpackt und verschickt werden, erfolgt vor dem Verpacken noch eine weitere manuelle Kontrollstufe. Dieser Prozess ist aktuell enorm personal- und zeitintensiv.
 
-![Beispiele von schlechten Stellen an Kartoffeln](./assets/datenerfassung/setup_2.jpg)
-![Beispiel einer schlechten, aufgeschnittenen Kartoffel](./assets/datenerfassung/setup_1.jpg)
+<img src="./assets/datenerfassung/setup_2.jpg" width="400" alt="Beispiele von schlechten Stellen an Kartoffeln" />
+<img src="./assets/datenerfassung/setup_1.jpg" width="400" alt="Beispiel einer schlechten, aufgeschnittenen Kartoffel" />
 
 **Zielsetzung des Projekts:**
 Um diesen Personalbedarf zu reduzieren, soll der Sortierprozess automatisiert werden. Ein Kamerasystem soll die schlechten Kartoffeln sowie Fremdkörper (wie Steine) automatisch erkennen, um sie auszusortieren. Eine Ventilinsel, welche über die GPIO Pins des Jetson angeschlossen ist, übernimmt die Vereinzelung.
@@ -30,8 +30,8 @@ Um diesen Personalbedarf zu reduzieren, soll der Sortierprozess automatisiert we
 ### Kamera-Blickwinkel am Förderband
 Um den Klassifikationsprozess möglichst realitätsnah zu simulieren, wurde folgendes Kamera-Setup aufgebaut, das den Blickwinkel auf das Band zeigt:
 
-![Kamera-Blick auf das Förderband 1](./assets/datenerfassung/setup_3.jpg)
-![Kamera-Blick auf das Förderband 2](./assets/datenerfassung/setup_4.jpg)
+<img src="./assets/datenerfassung/setup_3.jpg" width="400" alt="Kamera-Blick auf das Förderband 1" />
+<img src="./assets/datenerfassung/setup_4.jpg" width="400" alt="Kamera-Blick auf das Förderband 2" />
 
 ### Klassifizierung von Defekten
 Um einheitliche Kriterien für das Labeln zu schaffen und Defekte klar zuzuordnen, wurden Referenzbeispiele für schlechte und beschädigte Kartoffeln definiert:
@@ -41,10 +41,7 @@ Um einheitliche Kriterien für das Labeln zu schaffen und Defekte klar zuzuordne
 ### Prozess der Datenerhebung (Video)
 Das folgende Video demonstriert den Aufnahme-Prozess am Band in Aktion:
 
-<video width="100%" controls loop muted playsinline>
-  <source src="./assets/datenerfassung/datenerfassung_video.mov" type="video/mp4">
-  Dein Browser unterstützt das direkte Abspielen leider nicht. Du kannst es <a href="./assets/datenerfassung/datenerfassung_video.mov">hier herunterladen</a>.
-</video>
+https://github.com/philpos17/dhbw-kartoffel-sortierung/raw/main/docs/assets/datenerfassung/datenerfassung_video.mov
 
 ## 4. Erste Erkenntnisse und Herausforderungen
 - **Probleme bei der Fehlererkennung:** Es fiel auf, dass die Webcam spezifische Defekte wie schrumpelige Kartoffeln nicht gut abbilden und erkennen lässt.
