@@ -41,7 +41,7 @@ Um einheitliche Kriterien für das Labeln zu schaffen und Defekte klar zuzuordne
 ### Prozess der Datenerhebung (Video)
 Das folgende Video demonstriert den Aufnahme-Prozess am Band in Aktion:
 
-![Video der Datenerfassung am Band](./assets/datenerfassung/datenerfassung_video_small.mp4)
+https://github.com/user-attachments/assets/8d01e8c6-1edd-42d0-8253-a1c278131b8d
 
 ## 4. Erste Erkenntnisse und Herausforderungen
 - **Probleme bei der Fehlererkennung:** Es fiel auf, dass die Webcam spezifische Defekte wie schrumpelige Kartoffeln nicht gut abbilden und erkennen lässt.
