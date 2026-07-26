@@ -68,9 +68,11 @@ For maximum inference speed (e.g., 20+ FPS), models must be exported to TensorRT
 
 ![Jetson jtop Resource Usage](assets/jtop_resource_usage.png)
 
-As seen in the `jtop` screenshot above, the Jetson Orin Nano is heavily over-provisioned for the current sorting speed. Even while running the full end-to-end pipeline (video capture, YOLOv8 inference, ByteTrack, WebSocket streaming, and GPIO logic), the GPU usage remains well below its maximum capacity, and the CPU load is moderate. 
+As seen in the `jtop` screenshot above, the Jetson Orin Nano is heavily over-provisioned for the current sorting speed. Even while running the full end-to-end pipeline (video capture, YOLO inference, ByteTrack, WebSocket streaming, and GPIO logic), the GPU usage remains well below its maximum capacity, and the CPU load is moderate.
 
-The current system bottleneck is the physical conveyor speed required to prevent motion blur with the standard webcam, rather than the AI processing capabilities of the edge module.
+During end-to-end testing with TensorRT FP16 optimization, the model achieves an outstanding pure inference time of merely **4 ms per frame** (theoretically 250 FPS). However, the complete system pipeline maintains a stable throughput of **15 FPS** due to CPU-bound I/O bottlenecks.
+
+The physical system bottleneck remains the conveyor speed required to prevent motion blur with the standard webcam, rather than the AI processing capabilities of the edge module.
 
 ## Known Jetson Workarounds (Architecture Hacks)
 

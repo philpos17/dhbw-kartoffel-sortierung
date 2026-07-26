@@ -51,6 +51,11 @@ class CameraProcess:
                 print(f"-> FEHLER: Konnte Kamera {source} nicht oeffnen.", flush=True)
             return None
 
+        # 0. Check if camera_id is a valid video file
+        if isinstance(self.camera_id, str) and os.path.isfile(self.camera_id):
+            print(f"Lese Video aus Datei: {self.camera_id}", flush=True)
+            return cv2.VideoCapture(self.camera_id)
+
         # 1. Standard USB Camera (often video0 or video1)
         cap = try_cam(0, cv2.CAP_V4L2)
         if cap: return cap
@@ -120,8 +125,14 @@ class CameraProcess:
 
             ret, frame = self.cap.read()
             if not ret:
-                time.sleep(0.1)
-                continue
+                # If reading from a video file, loop it
+                if isinstance(self.camera_id, str) and os.path.isfile(self.camera_id):
+                    self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    ret, frame = self.cap.read()
+                    
+                if not ret:
+                    time.sleep(0.1)
+                    continue
                 
             # Process frame with YOLO
             annotated_frame, detections, inf_time = self.detector.process_frame(frame)

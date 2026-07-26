@@ -44,9 +44,9 @@ The following video demonstrates the recording process at the belt in action:
 https://github.com/user-attachments/assets/8d01e8c6-1edd-42d0-8253-a1c278131b8d
 
 ## 4. Initial Findings and Challenges
-- **Problems with Defect Detection:** It was noticed that the webcam does not capture and detect specific defects like shriveled potatoes well.
+- **Problems with Defect Detection and Throughput:** It was noticed that the webcam does not capture and detect specific defects like shriveled potatoes well. Furthermore, the camera setup is the primary bottleneck for increasing the conveyor belt speed.
 - **Causes:** The webcam's resolution is too low. In addition, the camera's high exposure/shutter time causes slightly blurred images of the moving potatoes (motion blur).
-- **Proposed Solution:** For future operation, the use of a professional industrial camera (preferably with a global shutter and higher resolution) is recommended, which would likely remedy the situation.
+- **Proposed Solution:** For future operation, the use of a professional industrial camera (preferably with a global shutter and higher resolution) is highly recommended. This will not only improve defect detection but is absolutely necessary to eliminate motion blur at higher, industrially realistic belt speeds.
 
 ## 5. Data Processing and Model Training in Roboflow
 - **Upload & Dataset:** All collected images were uploaded to the free platform **Roboflow**. The dataset is publicly available as an open-source project: [Potato Sorting on Conveyor Dataset (Roboflow Universe)](https://universe.roboflow.com/ms-workspace-m1gci/potato-sorting-on-conveyor). The final dataset on the platform comprises:

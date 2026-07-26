@@ -19,7 +19,9 @@ def main():
     ejector_queue.start()
     
     # 2. Initialize Camera and Vision Pipeline
-    cam = CameraProcess(camera_id=0, ejector_queue=ejector_queue)
+    # For local Mac testing: use video file instead of camera 0
+    video_path = "/Users/mhaegele/Downloads/datenerfassung_video_small.mp4"
+    cam = CameraProcess(camera_id=video_path, ejector_queue=ejector_queue)
     cam.start()
     
     # 3. Start Web Backend
