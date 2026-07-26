@@ -156,6 +156,15 @@ was not addressed by standard augmentation but by **targeted copy-paste instance
 - **Defect classes remain the weak, under-represented spot:** only 20 real `bad` and 3 `cut` test
   instances → statistically noisy. Most important next step: label more real defects into train,
   val **and** test.
+  
+#### Normalized Confusion Matrix (Validation, conf=0.25)
+The confusion matrix below (from the validation split at conf=0.25) visualizes the core challenge:
+while `potato` achieves near-perfect classification (1.00), the `bad` class suffers from massive
+false positives — 81% of background regions are incorrectly predicted as `bad`, explaining the
+low precision at this operating point. Raising the confidence threshold significantly reduces
+these false alarms (see [`docs/modell_iterationen.md`](docs/modell_iterationen.md) §5.2.1 for the full trade-off analysis).
+![Normalized Confusion Matrix – YOLO11s Iteration 4](exports/colab/Kartoffel_Ergebnisse_Iteration4_yolo11s/confusion_matrix_normalized.png)
+
 
 ## Planned Project Approach
 
