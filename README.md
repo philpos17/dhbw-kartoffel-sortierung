@@ -34,6 +34,9 @@ In particular, the following questions are to be answered:
 ## Dataset
 
 > **Detailed insights into the physical setup, camera angles, and the image acquisition process can be found in the [Project Preparations](docs/projekt_vorarbeiten.md#3-image-acquisition-setup)**
+> 
+> **The dataset is publicly available as an open-source project on Roboflow Universe:**
+> **[Potato Sorting on Conveyor Dataset](https://universe.roboflow.com/ms-workspace-m1gci/potato-sorting-on-conveyor)**
 
 The current dataset was managed in Roboflow and currently contains:
 
