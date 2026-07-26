@@ -103,15 +103,15 @@ Several object detection models have been tested in Roboflow so far.
 Initial Observation:
 The results so far show that the use case is fundamentally learnable. At the same time, the values indicate that dataset quality, class balance, and representativeness have a strong influence on model performance.
 
-## Model Development and Results (Reproducible Colab Pipeline)
+## Model Development and Training
+
+> **The model development and training process is documented in detail here: [`docs/modell_iterationen.md`](docs/modell_iterationen.md).**
 
 The Roboflow work was transferred into a reproducible training pipeline:
 [`code/colab/potato.ipynb`](code/colab/potato.ipynb). It covers the Roboflow download, class
 analysis, targeted copy-paste augmentation for the rare classes, multi-model training with
 immediate evaluation, model comparison, threshold analysis, and a single held-out test-set
-evaluation. 
-
-> **All design decisions and their rationale are documented in [`docs/modell_iterationen.md`](docs/modell_iterationen.md).**
+evaluation.
 
 ### Iteration history (validation)
 
