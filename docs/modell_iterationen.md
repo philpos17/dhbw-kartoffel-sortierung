@@ -30,6 +30,16 @@ Training: Google Colab (Tesla T4), Ultralytics YOLO, Datensatz via Roboflow
 **Ursache:** Extreme Klassen-Unausgewogenheit — `potato` 23.504 Instanzen, `bad` 1.913,
 `stone` 1.222, `cut` nur **46**. Das Problem war die **Datenlage**, nicht die Architektur.
 
+**Beispielbilder – Iteration 1** (dieselben Validierungsbilder):
+
+Ground Truth (echte Labels):
+
+![Validierungsbilder mit echten Labels, Iteration 1](../exports/colab/Kartoffel_Ergebnisse_Iteration1/val_batch0_labels.jpg)
+
+Vorhersage nach dem Training:
+
+![Validierungsbilder mit Vorhersagen, Iteration 1](../exports/colab/Kartoffel_Ergebnisse_Iteration1/val_batch0_pred.jpg)
+
 ---
 
 ## 2. Zentrale Erkenntnis: Augmentierung ≠ Klassenbalance
@@ -138,6 +148,16 @@ scharfe Abfall des `train/box_loss` bei Epoche 91 (0.44 → 0.37) stammt von `cl
 
 **Warum YOLO11s gewann:** Das Benchmark sortiert nach **`bad`-Recall**; die höhere Kapazität
 gegenüber Nano half der visuell heterogenen `bad`-Klasse deutlich.
+
+**Beispielbilder – Iteration 4 (YOLO11s)** (dieselben Validierungsbilder):
+
+Ground Truth (echte Labels):
+
+![Validierungsbilder mit echten Labels, Iteration 4](../exports/colab/Kartoffel_Ergebnisse_Iteration4_yolo11s/val_batch0_labels.jpg)
+
+Vorhersage nach dem Training:
+
+![Validierungsbilder mit Vorhersagen, Iteration 4](../exports/colab/Kartoffel_Ergebnisse_Iteration4_yolo11s/val_batch0_pred.jpg)
 
 #### 5.2.1 ⚠️ Kritischer Trade-off: `bad`-Precision bricht ein
 - Die **rohe** Konfusionsmatrix (Betriebspunkt conf=0.25) zeigt **1391 False-Positive-`bad`-Boxen**
