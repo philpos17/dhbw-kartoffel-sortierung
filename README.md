@@ -6,6 +6,10 @@ This project is part of a final university course project. The goal is to addres
 
 The use case originates from a potato farm, where potatoes are currently sorted manually. The process involves distinguishing between usable potatoes, damaged or bad potatoes, and stones or foreign objects. Manual sorting is time-consuming and labor-intensive. The aim of this project is to support or partially automate this process using an image-based system.
 
+ Preview |  |
+| :---: | :---: |
+| <video src="https://github.com/user-attachments/assets/ec5508cb-a7b4-466c-a3cf-77761cf79596" autoplay loop muted playsinline></video> | <video src="https://github.com/user-attachments/assets/e2c4a289-2a9f-4188-928f-dd7339a078a1" autoplay loop muted playsinline></video> |
+
 ## Problem Statement
 
 The project investigates whether potatoes and unwanted objects on a conveyor belt can be reliably detected and classified using Computer Vision.
