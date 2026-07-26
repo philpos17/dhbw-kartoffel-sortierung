@@ -21,6 +21,10 @@ Currently, we are considering an Object Detection setup with the following class
 - `cut`
 - `stone`
 
+| `potato` | `bad` | `cut` | `stone` |
+| :---: | :---: | :---: | :---: |
+| ![potato example](docs/assets/classes/potato.png) | ![bad example](docs/assets/classes/bad.png) | ![cut example](docs/assets/classes/cut.png) | ![stone example](docs/assets/classes/stone.png) |
+
 An open technical question is whether `cut` should remain a separate class in the long run or be treated as a subcategory of `bad`.
 
 ## Objectives
