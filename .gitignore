@@ -39,3 +39,7 @@ reports/tables/*
 !exports/colab/**/*.jpg
 !exports/colab/**/*.pt
 !exports/weights/**/*.pt
+
+# Ausnahme: Dokumentations-Bilder erlauben
+!code/jetson/assets/**/*.png
+!code/jetson/assets/**/*.jpg
