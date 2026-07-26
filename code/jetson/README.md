@@ -1,5 +1,7 @@
 # Potato Sorter - AI Vision Backend
 
+![Dashboard Preview](assets/dashboard_preview.png)
+
 This repository contains the backend and computer vision pipeline for the AI-powered Potato Sorter. It uses FastAPI for the web server, WebSockets for real-time video streaming, and YOLOv8 accelerated via NVIDIA TensorRT for real-time object detection on Jetson hardware.
 
 ## System Architecture
@@ -61,6 +63,14 @@ For maximum inference speed (e.g., 20+ FPS), models must be exported to TensorRT
    .venv/bin/yolo export model=models/kartoffel_modell_best.pt format=engine half=True workspace=4
    ```
 5. Restart the backend. The UI will automatically detect the new `.engine` file and allow you to select it for inference.
+
+## Hardware Utilization (jtop)
+
+![Jetson jtop Resource Usage](assets/jtop_resource_usage.png)
+
+As seen in the `jtop` screenshot above, the Jetson Orin Nano is heavily over-provisioned for the current sorting speed. Even while running the full end-to-end pipeline (video capture, YOLOv8 inference, ByteTrack, WebSocket streaming, and GPIO logic), the GPU usage remains well below its maximum capacity, and the CPU load is moderate. 
+
+The current system bottleneck is the physical conveyor speed required to prevent motion blur with the standard webcam, rather than the AI processing capabilities of the edge module.
 
 ## Known Jetson Workarounds (Architecture Hacks)
 

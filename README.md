@@ -186,6 +186,8 @@ An important part of the project is transferring the work previously done in Rob
 
 ## Target Hardware: Edge Deployment on NVIDIA Jetson
 
+[![Jetson Dashboard Teaser](code/jetson/assets/dashboard_preview.png)](code/jetson/README.md)
+
 The edge deployment went beyond a pure feasibility assessment: a project member contributed a
 working deployment pipeline for the **NVIDIA Jetson Orin Nano**. The code lives under
 [`code/jetson/`](code/jetson/) and is documented in [`code/jetson/README.md`](code/jetson/README.md).
