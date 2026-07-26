@@ -65,9 +65,6 @@ images to 2,287); val and test remain unaugmented. The copy-paste step in the Co
 additionally generates synthetic `bad`/`cut` instances in the training set. Despite this enrichment,
 the distribution stays heavily imbalanced (`potato` ≈ 92.9 %, `cut` ≈ 0.4 %).
 
-Important note:
-The dataset is likely not yet fully representative of the actual real-world application. As it stands, potatoes were placed on a belt, while stones and damaged examples were sometimes artificially added. The representativeness of the dataset, especially the validation set, must be critically reflected upon during the project.
-
 ### External Data Sources (implemented via Roboflow Universe)
 
 To enrich the rare defect classes (`bad`, `cut`), we searched **Roboflow Universe** for suitable
@@ -112,8 +109,9 @@ The Roboflow work was transferred into a reproducible training pipeline:
 [`code/colab/potato.ipynb`](code/colab/potato.ipynb). It covers the Roboflow download, class
 analysis, targeted copy-paste augmentation for the rare classes, multi-model training with
 immediate evaluation, model comparison, threshold analysis, and a single held-out test-set
-evaluation. **All design decisions and their rationale are documented in
-[`docs/modell_iterationen.md`](docs/modell_iterationen.md).**
+evaluation. 
+
+> **All design decisions and their rationale are documented in [`docs/modell_iterationen.md`](docs/modell_iterationen.md).**
 
 ### Iteration history (validation)
 
@@ -173,16 +171,6 @@ The planned workspace is as follows:
 - `GitHub` for collaboration and version control
 - `Google Colab` or local machines for training and evaluation
 
-## Reproducibility
-
-An important part of the project is transferring the work previously done in Roboflow into a comprehensible project structure. In particular, the following points must be documented:
-
-- dataset version used
-- classes and label definitions
-- preprocessing and augmentation decisions
-- trained model architectures
-- hyperparameters used
-- evaluation results
 
 ## Target Hardware: Edge Deployment on NVIDIA Jetson
 
@@ -219,17 +207,6 @@ Open points for a productive deployment remain the real camera/belt integration,
 and throughput against the required belt speed, and implementing the class-specific confidence
 thresholds (especially high `bad` recall) in post-processing.
 
-## Open Questions
-
-The following points still need to be clarified or refined:
-
-- Should the target system distinguish 3 or 4 classes?
-- Is `cut` a separate class or part of `bad`?
-- What does the real class distribution look like in the field or on the belt?
-- What should a representative validation and test set look like?
-- Can additional real data be recorded?
-- Should the final goal be detection, counting, or actual sorting decisions?
-- How exactly should the class-specific confidence thresholds (especially high `bad` recall) be set in the Jetson post-processing and validated against the real camera/belt integration?
 
 ## Preliminary Conclusion
 
